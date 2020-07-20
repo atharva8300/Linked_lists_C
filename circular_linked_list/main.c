@@ -5,27 +5,22 @@
 struct node
 {
     int data;
-    struct node *next ;
+    struct node *next;
 };
-typedef struct node node ;
-node *start = NULL ;
+typedef struct node node;
+node *start = NULL;
 
-node* create_ll(node *);
+node* create_cll(node *);
+void display_cll(node *);
 
-node* insert_begin(node *);
+node* insert_beg(node *);
 node* insert_end(node *);
 node* insert_after(node *);
-node* insert_before(node *);
 
-node* delete_first(node *);
+node* delete_beg(node *);
 node* delete_end(node *);
 node* delete_after(node *);
-node* delete_node(node *);
 node* delete_list(node *);
-
-void display_sll(node *);
-
-node* sort_sll(node *);
 
 void display_options();
 
@@ -39,10 +34,10 @@ int main()
      scanf("%d",&n);
      switch(n)
      {
-        case 1: start = create_ll(start);
+        case 1: start = create_cll(start);
                 printf("\n created\n");
                 break;
-        case 2: start = insert_begin(start);
+        case 2: start = insert_beg(start);
                 printf("\n inserted at beginning \n");
                 break;
         case 3: start = insert_end(start);
@@ -51,44 +46,35 @@ int main()
         case 4: start = insert_after(start);
                 printf("\n inserted \n");
                 break;
-        case 5: start = insert_before(start);
-                printf("\n inserted \n");
-                break;
-        case 6: start = delete_first(start);
+        case 5: start = delete_beg(start);
                 printf("\n deleted \n");
                 break ;
-        case 7: start = delete_end(start);
+        case 6: start = delete_end(start);
                 printf("\n deleted \n");
                 break;
-        case 8: start = delete_after(start);
+        case 7: start = delete_after(start);
                 printf("\n deleted \n");
                 break;
-        case 9: start = delete_node(start);
+        case 8: start = delete_list(start);
+                start = delete_beg(start);
                 printf("\n deleted \n");
                 break;
-        case 10:start = delete_list(start);
-                printf("\n deleted \n");
-                break;
-        case 11:display_sll(start);
-                break;
-        case 12:start = sort_sll(start);
-                printf("\n sorted \n");
+        case 9:display_cll(start);
                 break;
      }
-    }while(n != 13);
+    }while(n != 10);
     getch();
     return 0;
 }
 void display_options()
 {
-     printf(" ****SLL****\n");
-     printf("1.create singly linked list \n");
-     printf(" 2.insert in beginning\n 3.insert at end\n 4.insert after a particular node\n 5.insert before a particular node\n");
-     printf(" 6.delete first node\n 7.delete last node\n 8.delete after a particular node\n 9.delete a node\n 10.delete entire list\n");
-     printf(" 11.display the list\n 12.sort list\n 13.exit");
+     printf(" ****CLL****\n");
+     printf(" 1.create circular linked list \n");
+     printf(" 2.insert in beginning\n 3.insert at end\n 4.insert after a particular node\n");
+     printf(" 5.delete first node\n 6.delete last node\n 7.delete after a particular node\n 8.delete entire list\n");
+     printf(" 9.display the list\n 10.exit \n");
 }
-
-node* create_ll(node *start)
+node* create_cll(node *start)
 {
 int val;
 printf("\nenter data[enter -1 to end the list]: ");
@@ -100,33 +86,40 @@ do
     new_node->data = val;
     if(start == NULL)
     {
-        new_node->next = NULL;
         start = new_node ;
+        new_node->next = start;
     }
     else
     {
         ptr = start;
-        while(ptr->next!= NULL)
+        while(ptr->next!= start)
         {
             ptr = ptr->next;
         }
         ptr->next = new_node;
-        new_node->next = NULL ;
+        new_node->next = start ;
     }
     printf("\n enter data:");
     scanf("%d",&val);
 }while(val!=-1);
 return start;
 }
-node* insert_begin(node *start)
+node* insert_beg(node *start)
 {
     int value ;
+    node *ptr ;
     node *new_node = (node *)malloc(sizeof(node));
     printf("\n enter data : ");
     scanf("%d",&value);
     new_node->data = value ;
+    ptr = start;
+    while(ptr->next!=start)
+    {
+        ptr=ptr->next;
+    }
+    ptr->next = new_node;
     new_node->next = start ;
-    start = new_node;
+    start = new_node ;
     return start ;
 }
 node* insert_end(node *start)
@@ -139,17 +132,18 @@ node* insert_end(node *start)
     new_node->data = val;
     if(start == NULL)
     {
-        new_node->next = NULL ;
         start = new_node;
+        new_node->next = start ;
+
     }
     else{
         ptr = start ;
-        while(ptr->next != NULL)
+        while(ptr->next != start)
         {
             ptr = ptr->next ;
         }
         ptr->next = new_node;
-        new_node->next = NULL ;
+        new_node->next = start ;
     }
     return start ;
 }
@@ -174,47 +168,51 @@ node* insert_after(node *start)
     new_node->next = ptr ;
     return start ;
 }
-node* insert_before(node *start)
+node* delete_beg(node *start)
 {
-    int val,before;
-    node *ptr,*preptr;
-    node *new_node = (node *)malloc(sizeof(node));
-    printf("\n enter value before which new node has to be inserted: ");
-    scanf("%d",&before);
-    printf("enter value to be inserted : ");
-    scanf("%d",&val);
-    new_node->data = val ;
+    node *ptr;
     ptr = start ;
-    preptr = start ;
-    while(ptr->data != before)
+    if(start == NULL)
     {
-        preptr = ptr;
-        ptr=ptr->next;
+        printf("underflow");
     }
-    preptr->next = new_node ;
-    new_node->next = ptr;
+    else
+    {
+        while(ptr->next!=start)
+        {
+            ptr = ptr->next;
+        }
+        //printf("out of while");
+        ptr->next = start->next ;
+        if(ptr->next != start)
+        {
+            start = ptr->next;
+            printf("\nin if");
+            free(ptr);
+
+        }
+        else
+        {
+            printf("in else");
+            free(ptr);
+            start = NULL;
+        }
+    }
+
     return start;
-}
-node* delete_first(node *start)
-{
-    node *ptr ;
-    ptr = start ;
-    start = start->next ;
-    free(ptr);
-    return start ;
 }
 node *delete_end(node *start)
 {
     node *ptr,*preptr,*temp;
     ptr =start;
     preptr = ptr;
-    while(ptr->next!=NULL)
+    while(ptr->next!=start)
     {
         preptr = ptr;
         ptr = ptr->next;
     }
     temp = ptr;
-    preptr->next = NULL;
+    preptr->next = start;
     free(temp);
     return start ;
 }
@@ -231,84 +229,38 @@ node* delete_after(node *start)
         preptr = ptr ;
         ptr = ptr->next;
     }
-    preptr->next = ptr->next;
     temp = ptr;
+    preptr->next = ptr->next;
     free(temp);
     return start ;
-}
-node* delete_node(node *start)
-{
-    int tobedeleted;
-    node *ptr,*preptr,*temp;
-    printf("\n enter node which has to be deleted: ");
-    scanf("%d",&tobedeleted);
-    ptr = start;
-    preptr = ptr ;
-    while(ptr->data != tobedeleted)
-    {
-        preptr = ptr ;
-        ptr = ptr->next;
-    }
-    temp = ptr ;
-    preptr->next = ptr->next ;
-    free(temp);
-    return start;
-
 }
 node* delete_list(node *start)
 {
-    node *ptr ;
+    node *ptr,*temp ;
     if(start != NULL)
     {
-        ptr = start;
-        while(ptr != NULL)
+        ptr = start ;
+        while(ptr->next != start)
         {
-            printf("\n %d is to be deleted next",ptr->data);
-            start = delete_first(ptr);
+            start = delete_beg(start);
             ptr = start ;
         }
-    }
-    return start;
-}
-node* sort_sll(node *start)
-{
-    node *ptr1,*ptr2;
-    int temp;
-    ptr1=start;
-    while(ptr1->next!=NULL)
-    {
-        ptr2 = ptr1->next ;
-        while(ptr2!=NULL)
-        {
-            if(ptr1->data > ptr2->data)
-            {
-                temp = ptr1->data;
-                ptr1->data = ptr2->data;
-                ptr2->data = temp ;
-            }
-            ptr2 = ptr2->next ;
-        }
-        ptr1 = ptr1->next ;
+       // start =delete_beg(start);
     }
     return start ;
 }
-void display_sll(node *start)
+void display_cll(node *start)
 {
     node *ptr;
     ptr = start;
-    if(start == NULL){printf("empty");}
-    while(ptr!=NULL)
+    if(start == NULL){printf("empty\n");}
+    else{while(ptr->next!=start)
     {
         printf("\t%d\t",ptr->data);
         ptr = ptr->next ;
     }
-    printf("\n\n");
+    printf("\t%d\t",ptr->data);
+    printf("\n\n");}
+
 }
-
-
-
-
-
-
-
 

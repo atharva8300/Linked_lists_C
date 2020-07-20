@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1595263295 source:d:\c_repos\linked_lists\circular_linked_list\main.c
+	<stdio.h>
+	<stdlib.h>
+	<conio.h>
+
