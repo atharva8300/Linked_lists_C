@@ -1,0 +1,6 @@
+# depslib dependency file v1.0
+1595407360 source:d:\c_repos\linked_lists\polynomial_representation_linkedlists\main.c
+	<stdio.h>
+	<stdlib.h>
+	<conio.h>
+
